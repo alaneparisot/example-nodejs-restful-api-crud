@@ -4,6 +4,7 @@
   "description": "Example of Node.js RESTful API CRUD Operations",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +23,13 @@
   "bugs": {
     "url": "https://github.com/alaneparisot/example-nodejs-restful-api-crud/issues"
   },
-  "homepage": "https://github.com/alaneparisot/example-nodejs-restful-api-crud#readme"
+  "homepage": "https://github.com/alaneparisot/example-nodejs-restful-api-crud#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
 }
