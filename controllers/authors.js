@@ -20,3 +20,11 @@ exports.getAuthor = async (req, res) => {
   const author = await Author.findById(id);
   res.status(200).json({ author });
 };
+
+// PATCH /authors/:id
+exports.patchAuthor = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body.author;
+  const author = await Author.findByIdAndUpdate(id, { name }, { new: true });
+  res.status(200).json({ author });
+};
