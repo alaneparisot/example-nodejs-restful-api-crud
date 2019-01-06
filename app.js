@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const authorRoutes = require('./routes/authors');
+const bookRoutes = require('./routes/books');
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/authors', authorRoutes);
+app.use('/api/books', bookRoutes);
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/NodeRestfulApiCrud', { useNewUrlParser: true })
