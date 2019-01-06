@@ -2,9 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const authorRoutes = require('./routes/authors');
+
 const app = express();
 
 app.use(bodyParser.json());
+
+// Routes
+app.use('/api/authors', authorRoutes);
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/NodeRestfulApiCrud', { useNewUrlParser: true })
