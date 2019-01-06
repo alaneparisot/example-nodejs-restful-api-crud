@@ -13,3 +13,10 @@ exports.getAuthors = async (req, res) => {
   const authors = await Author.find();
   res.status(200).json({ authors });
 };
+
+// GET /authors/:id
+exports.getAuthor = async (req, res) => {
+  const { id } = req.params;
+  const author = await Author.findById(id);
+  res.status(200).json({ author });
+};
