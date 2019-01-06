@@ -1,0 +1,26 @@
+{
+  "name": "example-nodejs-restful-api-crud",
+  "version": "0.0.0",
+  "description": "Example of Node.js RESTful API CRUD Operations",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaneparisot/example-nodejs-restful-api-crud.git"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "rest",
+    "api",
+    "crud"
+  ],
+  "author": "Alane Parisot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alaneparisot/example-nodejs-restful-api-crud/issues"
+  },
+  "homepage": "https://github.com/alaneparisot/example-nodejs-restful-api-crud#readme"
+}
