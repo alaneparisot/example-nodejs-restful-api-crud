@@ -34,3 +34,13 @@ exports.patchBook = async (req, res) => {
   const book = await Book.findByIdAndUpdate(id, update, { new: true });
   res.status(200).json({ book });
 };
+
+// DELETE /books/:id
+exports.deleteBook = async (req, res) => {
+  const { id } = req.params;
+  const book = await Book.findByIdAndDelete(id);
+  const author = await Author.findById(book.author);
+  author.books = author.books.filter((bookId) => bookId !== id);
+  await author.save();
+  res.status(200).end();
+};
