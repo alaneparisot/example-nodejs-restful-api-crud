@@ -13,3 +13,9 @@ exports.postBook = async (req, res) => {
   await author.save();
   res.status(201).json({ book });
 };
+
+// GET /books
+exports.getBooks = async (req, res) => {
+  const books = await Book.find();
+  res.status(200).json({ books });
+};
