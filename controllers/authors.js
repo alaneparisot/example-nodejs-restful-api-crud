@@ -28,3 +28,10 @@ exports.patchAuthor = async (req, res) => {
   const author = await Author.findByIdAndUpdate(id, { name }, { new: true });
   res.status(200).json({ author });
 };
+
+// DELETE /authors/:id
+exports.deleteAuthor = async (req, res) => {
+  const { id } = req.params;
+  await Author.findByIdAndDelete(id);
+  res.status(200).end();
+};
