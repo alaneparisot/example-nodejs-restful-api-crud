@@ -19,3 +19,18 @@ exports.getBooks = async (req, res) => {
   const books = await Book.find();
   res.status(200).json({ books });
 };
+
+// GET /books/:id
+exports.getBook = async (req, res) => {
+  const { id } = req.params;
+  const book = await Book.findById(id);
+  res.status(200).json({ book });
+};
+
+// PATCH /books/:id
+exports.patchBook = async (req, res) => {
+  const { id } = req.params;
+  const update = req.body.book;
+  const book = await Book.findByIdAndUpdate(id, update, { new: true });
+  res.status(200).json({ book });
+};
