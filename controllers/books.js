@@ -3,14 +3,12 @@ const Author = require('../models/author');
 
 // POST /books
 exports.postBook = async (req, res) => {
-  // For now, let's assume the author exists,
-  // and the book isn't already registered.
-  const { title, year, authorId } = req.body.book;
-  const author = await Author.findById(authorId);
-  const newBook = new Book({ title, year, author: authorId });
+  const newBook = new Book(req.body.book);
   const book = await newBook.save();
-  author.books.push(book);
-  await author.save();
+
+  req.author.books.push(book);
+  await req.author.save();
+
   res.status(201).json({ book });
 };
 
@@ -22,25 +20,26 @@ exports.getBooks = async (req, res) => {
 
 // GET /books/:id
 exports.getBook = async (req, res) => {
-  const { id } = req.params;
-  const book = await Book.findById(id);
-  res.status(200).json({ book });
+  res.status(200).json({
+    book: await req.book.populate('author', '-books').execPopulate()
+  });
 };
 
 // PATCH /books/:id
 exports.patchBook = async (req, res) => {
-  const { id } = req.params;
-  const update = req.body.book;
-  const book = await Book.findByIdAndUpdate(id, update, { new: true });
+  const book = await Book.findByIdAndUpdate(
+    req.params.id,
+    req.body.book,
+    { new: true, runValidators: true }
+  );
   res.status(200).json({ book });
 };
 
 // DELETE /books/:id
 exports.deleteBook = async (req, res) => {
-  const { id } = req.params;
-  const book = await Book.findByIdAndDelete(id);
-  const author = await Author.findById(book.author);
-  author.books = author.books.filter((bookId) => bookId !== id);
+  await Book.deleteOne({ _id: req.book._id });
+  const author = await Author.findById(req.book.author);
+  author.books = author.books.filter((bookId) => bookId !== req.book._id);
   await author.save();
   res.status(200).end();
 };
