@@ -3,43 +3,63 @@ const Author = require('../models/author');
 
 // POST /books
 exports.postBook = async (req, res) => {
-  const newBook = new Book(req.body.book);
-  const book = await newBook.save();
+  try {
+    const newBook = new Book(req.body.book);
+    const book = await newBook.save();
 
-  req.author.books.push(book);
-  await req.author.save();
+    req.author.books.push(book);
+    await req.author.save();
 
-  res.status(201).json({ book });
+    res.status(201).json({ book });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // GET /books
 exports.getBooks = async (req, res) => {
-  const books = await Book.find();
-  res.status(200).json({ books });
+  try {
+    const books = await Book.find();
+    res.status(200).json({ books });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // GET /books/:id
 exports.getBook = async (req, res) => {
-  res.status(200).json({
-    book: await req.book.populate('author', '-books').execPopulate()
-  });
+  try {
+    res.status(200).json({
+      book: await req.book.populate('author', '-books').execPopulate()
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // PATCH /books/:id
 exports.patchBook = async (req, res) => {
-  const book = await Book.findByIdAndUpdate(
-    req.params.id,
-    req.body.book,
-    { new: true, runValidators: true }
-  );
-  res.status(200).json({ book });
+  try {
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      req.body.book,
+      { new: true, runValidators: true }
+    );
+    res.status(200).json({ book });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // DELETE /books/:id
 exports.deleteBook = async (req, res) => {
-  await Book.deleteOne({ _id: req.book._id });
-  const author = await Author.findById(req.book.author);
-  author.books = author.books.filter((bookId) => bookId !== req.book._id);
-  await author.save();
-  res.status(200).end();
+  try {
+    await Book.deleteOne({ _id: req.book._id });
+    const author = await Author.findById(req.book.author);
+    author.books = author.books.filter((bookId) => bookId !== req.book._id);
+    await author.save();
+    res.status(200).end();
+  } catch (error) {
+    next(error);
+  }
 };
