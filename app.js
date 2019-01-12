@@ -1,10 +1,12 @@
+require('./config/config');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 
 const authorRoutes = require('./routes/authors');
 const bookRoutes = require('./routes/books');
 const errorHandler = require('./middlewares/error-handler');
+const db = require('./db/db');
 
 const app = express();
 
@@ -14,12 +16,21 @@ app.use(bodyParser.json());
 app.use('/api/authors', authorRoutes);
 app.use('/api/books', bookRoutes);
 
+// Error Handler
 app.use(errorHandler.catch);
 
-mongoose
-  .connect('mongodb://127.0.0.1:27017/NodeRestfulApiCrud', { useNewUrlParser: true })
-  .then(() => {
-    app.listen(3000, () => {
-      console.info('App is connected to database and running...');
-    });
-  });
+// Initialization
+if (process.env.NODE_ENV !== 'test') {
+  init();
+}
+
+async function init () {
+  // Database Connection
+  await db.connect();
+
+  // Event Listener
+  await app.listen(process.env.PORT);
+  console.info(`App is RUNNING on port ${process.env.PORT}.`);
+};
+
+module.exports = {app, init};

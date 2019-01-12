@@ -4,8 +4,10 @@
   "description": "Example of Node.js RESTful API CRUD Operations",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "start-watch": "nodemon app.js",
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --exit tests/**/*.js",
+    "test-watch": "nodemon --exec \"npm test\""
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,9 @@
     "mongoose": "^5.4.2"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.9",
+    "supertest": "^3.3.0"
   }
 }
