@@ -4,6 +4,8 @@ const request = require('supertest');
 const { app, init } = require('../../app');
 const Author = require('../../models/author');
 
+const authorEndpoint = '/api/authors';
+
 let firstAuthor;
 
 describe('CRUD: Authors', () => {
@@ -16,24 +18,24 @@ describe('CRUD: Authors', () => {
 
   describe('POST /authors', () => {
     const author = {
-      name: 'John Steinbeck',
+      name: 'Ernest Hemingway',
       country: 'United States'
     };
 
     it('should create a new author', async () => {
       await request(app)
-        .post('/api/authors')
+        .post(authorEndpoint)
         .send({ author })
         .expect(201)
         .then(async (res) => {
-          const newAuthor = await Author.findById(res.body.author._id);
+          const newAuthor = await Author.findOne(author);
           expect(newAuthor instanceof Author).to.be.true;
         });
     });
 
     it('should not create an existing author', async () => {
       await request(app)
-        .post('/api/authors')
+        .post(authorEndpoint)
         .send({ author })
         .expect(422)
         .then(async (res) => {
@@ -44,7 +46,7 @@ describe('CRUD: Authors', () => {
 
     it('should not create a new author with invalid inputs', async () => {
       await request(app)
-        .post('/api/authors')
+        .post(authorEndpoint)
         .send({ name: '', country: '' })
         .expect(422)
         .then(async (res) => {
@@ -59,7 +61,7 @@ describe('CRUD: Authors', () => {
 
     it('should get all authors', async () => {
       await request(app)
-        .get('/api/authors')
+        .get(authorEndpoint)
         .expect(200)
         .then(async (res) => {
           const authors = await Author.find();
@@ -73,7 +75,7 @@ describe('CRUD: Authors', () => {
 
     it('should get a user', async () => {
       await request(app)
-        .get('/api/authors/' + firstAuthor._id)
+        .get(`${authorEndpoint}/${firstAuthor.id}`)
         .expect(200)
         .then((res) => {
           expect(JSON.stringify(res.body.author)).to.equal(JSON.stringify(firstAuthor));
@@ -82,7 +84,7 @@ describe('CRUD: Authors', () => {
 
     it('should not get a nonexistent user', async () => {
       await request(app)
-        .get('/api/authors/' + '5c37c35efba1fa14e811b542')
+        .get(`${authorEndpoint}/5c37c35efba1fa14e811b542`)
         .expect(422); // TODO: Should be 404
     });
 
@@ -94,13 +96,13 @@ describe('CRUD: Authors', () => {
       const newName = 'Mark Twain';
 
       await request(app)
-        .patch('/api/authors/' + firstAuthor._id)
+        .patch(`${authorEndpoint}/${firstAuthor.id}`)
         .send({ author: { name: newName } })
         .expect(200)
         .then(async (res) => {
           expect(res.body.author.name).to.equal(newName);
 
-          const author = await Author.findById(firstAuthor._id);
+          const author = await Author.findById(firstAuthor.id);
           expect(author.name).to.equal(newName);
         });
     });
@@ -113,10 +115,10 @@ describe('CRUD: Authors', () => {
       const authors = await Author.find();
 
       await request(app)
-        .delete('/api/authors/' + firstAuthor._id)
+        .delete(`${authorEndpoint}/${firstAuthor.id}`)
         .expect(200)
         .then(async () => {
-          const author = await Author.findById(firstAuthor._id);
+          const author = await Author.findById(firstAuthor.id);
           expect(author).to.be.null;
 
           const authorsAfterDeleting = await Author.find();
@@ -128,9 +130,13 @@ describe('CRUD: Authors', () => {
 
 });
 
-// Private: Helpers
+// Private
 
 async function feedAuthors() {
-  const author = new Author({ name: 'Ernest Hemingway', country: 'United States' });
+  const author = new Author({
+    name: 'John Steinbeck',
+    country: 'United States'
+  });
+
   firstAuthor = await author.save();
 }

@@ -10,6 +10,8 @@ const db = require('./db/db');
 
 const app = express();
 
+let appIsRunning = false;
+
 app.use(bodyParser.json());
 
 // Routes
@@ -24,13 +26,17 @@ if (process.env.NODE_ENV !== 'test') {
   init();
 }
 
-async function init () {
+async function init() {
+  if (appIsRunning) { return; } // For unit testing
+
   // Database Connection
   await db.connect();
 
   // Event Listener
   await app.listen(process.env.PORT);
   console.info(`App is RUNNING on port ${process.env.PORT}.`);
+
+  appIsRunning = true;
 };
 
-module.exports = {app, init};
+module.exports = { app, init };
